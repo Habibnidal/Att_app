@@ -24,14 +24,14 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="").split(",")
 
 
 # --------------------------------------------------
-# CSRF / Security
+# Security / Proxy (Render)
 # --------------------------------------------------
 CSRF_TRUSTED_ORIGINS = [
     "https://*.onrender.com",
 ]
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=False, cast=bool)
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    # Local app
     "attendance_app.attendance",
 ]
 
@@ -69,6 +71,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
@@ -77,11 +80,12 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "attendance_app.wsgi.application"
+# IMPORTANT: must match Gunicorn command
+WSGI_APPLICATION = "attendance_app.attendance_app.wsgi.application"
 
 
 # --------------------------------------------------
-# Database (PostgreSQL for Render)
+# Database (Render PostgreSQL)
 # --------------------------------------------------
 DATABASES = {
     "default": dj_database_url.config(
