@@ -1,0 +1,101 @@
+{% extends 'attendance/base.html' %}
+
+{% block title %}Take Attendance - Student Attendance System{% endblock %}
+
+{% block content %}
+<div class="progress-container">
+    <div class="progress-bar-custom" style="width: {{ progress }}%"></div>
+</div>
+
+<div class="text-center mb-3">
+    <h5>Progress: {{ current_index|add:1 }} / {{ total_students }}</h5>
+</div>
+
+<div class="student-info">
+    <div class="row text-center mb-3">
+        <div class="col-12">
+            <h4><i class="fas fa-user"></i> {{ current_student.student_name }}</h4>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-6">
+            <strong>Roll Number:</strong><br>
+            <span class="text-primary">{{ current_student.roll_number }}</span>
+        </div>
+        <div class="col-6">
+            <strong>Course:</strong><br>
+            <span class="text-info">{{ current_student.course_name }}</span>
+        </div>
+    </div>
+    
+    <div class="row mt-3">
+        <div class="col-12 text-center">
+            <div class="form-check form-switch d-inline-block">
+                <input class="form-check-input" type="checkbox" id="absentToggle" 
+                       {% if is_absent_today %}checked{% endif %}>
+                <label class="form-check-label" for="absentToggle">
+                    <strong>Mark as Absent</strong>
+                </label>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-3">
+        <div class="col-12 text-center">
+            <div class="alert {% if is_absent_today %}alert-danger{% else %}alert-success{% endif %} mb-0">
+                <i class="fas {% if is_absent_today %}fa-user-times{% else %}fa-user-check{% endif %}"></i>
+                <strong>Current Status:</strong> 
+                {% if is_absent_today %}Absent{% else %}Present{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-3">
+    <small class="text-muted">
+        <i class="fas fa-info-circle"></i> 
+        Use the buttons below to mark attendance and move to the next student
+    </small>
+</div>
+{% endblock %}
+
+{% block action_buttons %}
+<div class="action-buttons">
+    <form method="post" action="{% url 'mark_attendance' %}" id="attendanceForm">
+        {% csrf_token %}
+        <input type="hidden" name="student_id" value="{{ current_student.id }}">
+        <input type="hidden" name="current_index" value="{{ current_index }}">
+        <input type="hidden" name="action" id="actionInput" value="present">
+        
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-present btn-action" onclick="setAction('present')">
+                <i class="fas fa-user-check"></i> Present
+            </button>
+            <button type="submit" class="btn btn-absent btn-action" onclick="setAction('absent')">
+                <i class="fas fa-user-times"></i> Absent
+            </button>
+            <a href="{% url 'attendance_list' %}" class="btn btn-secondary">
+                <i class="fas fa-list"></i> View List
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('absentToggle').addEventListener('change', function() {
+    document.getElementById('actionInput').value = this.checked ? 'absent' : 'present';
+});
+
+function setAction(action) {
+    document.getElementById('actionInput').value = action;
+    document.getElementById('absentToggle').checked = (action === 'absent');
+}
+
+// Set initial state
+document.getElementById('absentToggle').checked = {% if is_absent_today %}true{% else %}false{% endif %};
+document.getElementById('actionInput').value = {% if is_absent_today %}'absent'{% else %}'present'{% endif %};
+</script>
+{% endblock %}

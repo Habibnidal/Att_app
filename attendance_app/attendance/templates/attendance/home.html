@@ -1,0 +1,38 @@
+{% extends 'attendance/base.html' %}
+
+{% block title %}Home - Student Attendance System{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h1 class="mb-4"><i class="fas fa-graduation-cap"></i> Student Attendance System</h1>
+    <p class="lead mb-5">Manage student attendance efficiently</p>
+    
+    <div class="row g-3">
+        <div class="col-12">
+            <a href="{% url 'import_students' %}" class="btn btn-primary btn-lg w-100 mb-3">
+                <i class="fas fa-file-excel"></i> Import Students Data
+            </a>
+        </div>
+        <div class="col-12">
+            <a href="{% url 'attendance_list' %}" class="btn btn-info btn-lg w-100 mb-3">
+                <i class="fas fa-list"></i> View Attendance List
+            </a>
+        </div>
+        <div class="col-12">
+            <a href="{% url 'take_attendance' %}" class="btn btn-success btn-lg w-100 mb-3">
+                <i class="fas fa-user-check"></i> Take Attendance
+            </a>
+        </div>
+        <div class="col-12">
+            <a href="{% url 'absentees_list' %}" class="btn btn-warning btn-lg w-100 mb-3">
+                <i class="fas fa-user-times"></i> View Absentees
+            </a>
+        </div>
+        <div class="col-12">
+            <a href="{% url 'print_absentees' %}" class="btn btn-secondary btn-lg w-100 mb-3">
+                <i class="fas fa-print"></i> Print Absentees List
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
