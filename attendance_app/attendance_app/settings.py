@@ -60,7 +60,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "attendance_app.urls"
+ROOT_URLCONF = "attendance_app.attendance_app.urls"
 
 TEMPLATES = [
     {
